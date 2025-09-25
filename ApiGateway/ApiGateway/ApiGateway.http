@@ -1,0 +1,67 @@
+@ApiGateway_HostAddress = https://localhost:7129
+@ApiGateway_Downstream = https://localhost:7101
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQxODU0Y2ViLWJmYmItNDc0NC1iYzc0LWVlZDQ2NDBmZWQzZiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJ1c2VyMUBleGFtcGxlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJuYmYiOjE3NTg4MjM0NTksImV4cCI6MTc1ODgyNzA1OX0.bo8ZKE-EXB7A1x-udpNo6cA9ZCKILPQ7KPfGy24ZNkk
+
+### sample public endpoint on gateway
+GET {{ApiGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### Register normal user
+POST {{ApiGateway_HostAddress}}/api/accounts/register?role=User
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "user1@example.com",
+  "password": "P@ssw0rd123!",
+  "phone": "1234567890",
+  "name": "hello"
+}
+
+### Register staff user
+POST {{ApiGateway_HostAddress}}/api/accounts/register?role=Staff
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "staff1@example.com",
+  "password": "P@ssw0rd123!",
+  "phone": "1234567890"
+}
+
+### Login
+POST {{ApiGateway_HostAddress}}/api/accounts/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "user1@example.com",
+  "password": "P@ssw0rd123!"
+}
+
+### Me
+GET {{ApiGateway_HostAddress}}/api/accounts/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Call downstream THROUGH gateway (claims injected)
+GET {{ApiGateway_HostAddress}}/api/service1s/api/secure/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Call a role-protected downstream endpoint (expects User role)
+GET {{ApiGateway_HostAddress}}/api/service1s/api/secure/staff-area
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### (Negative test) Direct call to downstream (should fail 401 because no headers)
+GET https://localhost:7101/api/secure/me
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### (Optional) Same direct call with forged headers (should be blocked by network, not code)
+# 2 see current exposure; secure via network/mTLS/firewall.
+GET https://localhost:7101/api/secure/me
+X-User-Id: some-user-id
+X-User-Role: Staff
+Accept: application/json

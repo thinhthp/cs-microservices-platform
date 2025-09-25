@@ -1,0 +1,35 @@
+# Build
+bin/
+obj/
+[Bb]uild/
+artifacts/
+
+# User secrets
+**/secrets.json
+
+# VS / Rider / tooling
+.vs/
+*.user
+*.suo
+*.userprefs
+
+# Logs
+*.log
+
+# Certificates
+*.pfx
+*.cer
+
+# Env / local
+.env
+.env.*
+
+# Publish output
+publish/
+
+# Coverage
+coverage/
+*.lcov
+
+# Generated
+Generated/*

@@ -1,5 +1,8 @@
 ﻿using ApiGateway.Entities.Entities;
 using ApiGateway.Repositories.Data;
+using ApiGateway.Services.Messaging;
+using ApiGateway.Services.Options;
+using ApiGateway.Services.Services.Mail;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +17,7 @@ namespace ApiGateway.Extensions
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
             })
             .AddEntityFrameworkStores<CSIdentityContext>()
             .AddDefaultTokenProviders();
@@ -55,6 +59,14 @@ namespace ApiGateway.Extensions
             })
             ;
 
+            return services;
+        }
+
+        public static IServiceCollection AddRabbitMqEmailPublisher(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
+            services.AddSingleton<RabbitMqConnectionManager>();
+            services.AddScoped<IEmailPublisher, RabbitMqEmailPublisher>();
             return services;
         }
     }

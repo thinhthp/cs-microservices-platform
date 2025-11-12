@@ -59,6 +59,9 @@ builder.Services.AddIdentityConfiguration();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
+// Configure Rate Limiting
+builder.Services.AddRateLimiting(builder.Configuration);
+
 // Add CORS services.
 builder.Services.AddCors(options =>
 {
@@ -91,8 +94,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+// Limit before mapping controllers
+app.UseRateLimiter();
+
+app.MapControllers().RequireRateLimiting("PerUserOrIp");
 
 // Reverse proxy pipeline
-app.MapGatewayReverseProxy().RequireAuthorization();
+app.MapGatewayReverseProxy().RequireAuthorization().RequireRateLimiting("PerUserOrIp");
 app.Run();

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ProductService.Data.DbFirst;
 using ProductService.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddGatewayHeaderAuth(builder.Configuration);
+
+// Configure DbContext
+builder.Services.AddDbContext<ProductDbFirstContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

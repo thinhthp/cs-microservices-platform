@@ -1,6 +1,46 @@
-@ProductService_HostAddress = http://localhost:5130
+@ProductService_HostAddress = https://localhost:7101
 
-GET {{ProductService_HostAddress}}/weatherforecast/
+### Brands
+GET {{ProductService_HostAddress}}/brands
 Accept: application/json
 
 ###
+GET {{ProductService_HostAddress}}/brands/1
+Accept: application/json
+
+###
+POST {{ProductService_HostAddress}}/brands
+Content-Type: application/json
+
+{
+	"name": "Tesla"
+}
+
+### Models
+GET {{ProductService_HostAddress}}/models?brandId=1
+Accept: application/json
+
+###
+POST {{ProductService_HostAddress}}/models
+Content-Type: application/json
+
+{
+	"brandId": 1,
+	"name": "Model 3"
+}
+
+### Variants
+GET {{ProductService_HostAddress}}/variants?modelId=1
+Accept: application/json
+
+###
+POST {{ProductService_HostAddress}}/variants
+Content-Type: application/json
+
+{
+	"modelId": 1,
+	"name": "Long Range",
+	"rangeKm": 560,
+	"basePrice": 49999.99
+}
+

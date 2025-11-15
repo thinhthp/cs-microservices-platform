@@ -1,5 +1,9 @@
+using BLL.Interfaces;
+using BLL.Services;
+using DAL.Data.DbFirst;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
-using ProductService.Data.DbFirst;
 using ProductService.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,16 @@ builder.Services.AddGatewayHeaderAuth(builder.Configuration);
 builder.Services.AddDbContext<ProductDbFirstContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+// Configure Repositories
+builder.Services.AddScoped<IModelRepository, ModelRepository>();
+builder.Services.AddScoped<IVariantRepository, VariantRepository>();
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+
+// Configure Services
+builder.Services.AddScoped<IVariantService, VariantService>();
+builder.Services.AddScoped<IModelService, ModelService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

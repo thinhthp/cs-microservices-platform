@@ -1,85 +1,60 @@
+using BLL.DTOs.Model;
+using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProductService.Data.DbFirst;
-using ProductService.Entities.DbFirst;
 
-namespace ProductService.Controllers
+namespace ProductService.Controllers;
+
+[ApiController]
+[Route("api/models")]
+public class ModelsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/models")]
-    public class ModelsController : ControllerBase
+    private readonly IModelService _modelService;
+
+    public ModelsController(IModelService modelService)
     {
-        private readonly ProductDbFirstContext _db;
+        _modelService = modelService;
+    }
 
-        public ModelsController(ProductDbFirstContext db)
-        {
-            _db = db;
-        }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ModelResponse>>> GetAll()
+    {
+        var models = await _modelService.GetAllAsync();
+        return Ok(models);
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<model>>> GetAll()
-        {
-            var items = await _db.models
-                .AsNoTracking()
-                .ToListAsync();
-            return Ok(items);
-        }
+    [HttpGet("{id:long}")]
+    public async Task<ActionResult<ModelResponse>> GetById(long id)
+    {
+        var model = await _modelService.GetByIdAsync(id);
+        if (model == null)
+            return NotFound();
+        return Ok(model);
+    }
 
-        [HttpGet("{id:long}")]
-        public async Task<ActionResult<model>> GetById(long id)
-        {
-            var item = await _db.models
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.id == id);
-            if (item == null) return NotFound();
-            return Ok(item);
-        }
+    [HttpPost]
+    public async Task<ActionResult<ModelResponse>> Create([FromBody] ModelRequest dto)
+    {
+        var createdModel = await _modelService.AddAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = createdModel.Id }, createdModel);
+    }
 
-        [HttpPost]
-        public async Task<ActionResult<model>> Create([FromBody] model input)
-        {
-            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+    [HttpPut("{id:long}")]
+    public async Task<IActionResult> Update(long id, [FromBody] ModelRequest dto)
+    {
+        var existingModel = await _modelService.GetByIdAsync(id);
+        if (existingModel == null)
+            return NotFound();
+        await _modelService.UpdateAsync(id, dto);
+        return NoContent();
+    }
 
-            input.id = 0;
-            _db.models.Add(input);
-            await _db.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new { id = input.id }, input);
-        }
-
-        [HttpPut("{id:long}")]
-        public async Task<IActionResult> Update(long id, [FromBody] model input)
-        {
-            if (id != input.id)
-                return BadRequest(new { message = "ID mismatch." });
-
-            var exists = await _db.models.AnyAsync(x => x.id == id);
-            if (!exists) return NotFound();
-
-            _db.Entry(input).State = EntityState.Modified;
-            _db.Entry(input).Property(e => e.id).IsModified = false;
-
-            try
-            {
-                await _db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _db.models.AnyAsync(x => x.id == id)) return NotFound();
-                throw;
-            }
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id:long}")]
-        public async Task<IActionResult> Delete(long id)
-        {
-            var entity = await _db.models.FirstOrDefaultAsync(x => x.id == id);
-            if (entity == null) return NotFound();
-
-            _db.models.Remove(entity);
-            await _db.SaveChangesAsync();
-            return NoContent();
-        }
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var existingModel = await _modelService.GetByIdAsync(id);
+        if (existingModel == null)
+            return NotFound();
+        await _modelService.DeleteAsync(id);
+        return NoContent();
     }
 }

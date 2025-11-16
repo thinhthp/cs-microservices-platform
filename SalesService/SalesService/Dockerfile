@@ -4,7 +4,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 80
 EXPOSE 8081
 
 
@@ -12,10 +12,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SalesService/SalesService.csproj", "SalesService/"]
+COPY ["SalesService/SalesService/SalesService.csproj", "SalesService/"]
 RUN dotnet restore "./SalesService/SalesService.csproj"
 COPY . .
-WORKDIR "/src/SalesService"
+WORKDIR "/src/SalesService/SalesService"
 RUN dotnet build "./SalesService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
@@ -26,5 +26,15 @@ RUN dotnet publish "./SalesService.csproj" -c $BUILD_CONFIGURATION -o /app/publi
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
+
+# Install curl for HEALTHCHECK
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+# USER $APP_UID
+
 COPY --from=publish /app/publish .
+
+# Health check
+HEALTHCHECK --interval=15s --timeout=3s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:80/health || exit 1
 ENTRYPOINT ["dotnet", "SalesService.dll"]

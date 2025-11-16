@@ -1,0 +1,85 @@
+networks:
+  backend:
+    driver: bridge
+
+services:
+  apigateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/ApiGateway/Dockerfile
+    ports:
+      - "5206:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=80
+    networks:
+      - backend
+    depends_on:
+      - productservice
+      - inventoryservice
+      - salesservice
+      - mailservice
+      - rabbitmq
+
+  productservice:
+    build:
+      context: .
+      dockerfile: ProductService/ProductService/Dockerfile
+    networks:
+      - backend
+    ports:
+      - "5130:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=80
+
+  inventoryservice:
+    build:
+      context: .
+      dockerfile: InventoryService/InventoryService/Dockerfile
+    networks:
+      - backend
+    ports:
+      - "5199:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=80
+
+  salesservice:
+    build:
+      context: .
+      dockerfile: SalesService/SalesService/Dockerfile
+    networks:
+      - backend
+    ports:
+      - "5103:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=80
+
+  mailservice:
+    build:
+      context: .
+      dockerfile: MailService/MailService/Dockerfile
+    networks:
+      - backend
+    ports:
+      - "5181:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=80
+      - SendGrid__ApiKey=${SendGrid__ApiKey}
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    networks:
+      - backend
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin

@@ -40,6 +40,25 @@ namespace MailService.Services.Messaging
             {
                 if (_connection is { IsOpen: true }) return _connection;
 
+                var delay = TimeSpan.FromSeconds(1);
+                var maxDelay = TimeSpan.FromSeconds(10);
+
+                for (var attempt = 1; attempt <= 10; attempt++)
+                {
+                    try
+                    {
+                        _connection = await _factory.CreateConnectionAsync(ct).ConfigureAwait(false);
+                        return _connection;
+                    }
+                    catch when (!ct.IsCancellationRequested && attempt < 10)
+                    {
+                        await Task.Delay(delay, ct).ConfigureAwait(false);
+                        var next = TimeSpan.FromSeconds(delay.TotalSeconds * 2);
+                        delay = next <= maxDelay ? next : maxDelay;
+                    }
+                }
+
+                // Last attempt throws
                 _connection = await _factory.CreateConnectionAsync(ct).ConfigureAwait(false);
                 return _connection;
             }

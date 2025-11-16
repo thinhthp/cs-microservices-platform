@@ -32,6 +32,9 @@ builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Health checks
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,5 +50,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Liveness endpoint for Docker/K8s
+app.MapHealthChecks("/health");
 
 app.Run();

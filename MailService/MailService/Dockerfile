@@ -4,18 +4,18 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 80
+EXPOSE 8087
 
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MailService/MailService.csproj", "MailService/"]
+COPY ["MailService/MailService/MailService.csproj", "MailService/"]
 RUN dotnet restore "./MailService/MailService.csproj"
 COPY . .
-WORKDIR "/src/MailService"
+WORKDIR "/src/MailService/MailService"
 RUN dotnet build "./MailService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
@@ -26,5 +26,16 @@ RUN dotnet publish "./MailService.csproj" -c $BUILD_CONFIGURATION -o /app/publis
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
+
+# Install curl for HEALTHCHECK
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+# USER $APP_UID
+
 COPY --from=publish /app/publish .
+
+# Health check
+HEALTHCHECK --interval=15s --timeout=3s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:80/health || exit 1
+
 ENTRYPOINT ["dotnet", "MailService.dll"]

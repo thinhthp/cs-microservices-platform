@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SalesService.DAL.Data;
 using SalesService.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,10 @@ builder.Services.AddSwaggerGen();
 
 // Health checks
 builder.Services.AddHealthChecks();
+
+// Add db
+builder.Services.AddDbContext<SalesContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 

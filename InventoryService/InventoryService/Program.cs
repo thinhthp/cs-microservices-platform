@@ -1,4 +1,10 @@
+using BLL.Interfaces;
+using BLL.Services;
+using DAL.Data;
+using DAL.Interfaces;
+using DAL.Repositories;
 using InventoryService.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +12,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddGatewayHeaderAuth(builder.Configuration);
+
+// Configure DbContext
+builder.Services.AddDbContext<InventoryDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+// Configure Repositories
+builder.Services.AddScoped<IDealerRepository, DealerRepository>();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+
+// Configure Services
+builder.Services.AddScoped<IInventoryService, BLL.Services.InventoryService>();
+builder.Services.AddScoped<IDealerService, DealerService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

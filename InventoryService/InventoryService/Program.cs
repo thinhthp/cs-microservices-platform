@@ -33,6 +33,15 @@ builder.Services.AddSwaggerGen();
 // Health checks
 builder.Services.AddHealthChecks();
 
+// add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAllOrigins",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+    );
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -51,5 +60,7 @@ app.MapControllers();
 
 // Liveness endpoint for Docker/K8s
 app.MapHealthChecks("/health");
+
+app.UseCors("AllowAllOrigins");
 
 app.Run();

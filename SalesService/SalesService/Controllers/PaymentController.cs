@@ -32,7 +32,7 @@ namespace SalesService.Controllers
             {
                 var payment = await _paymentService.CreateAsync(request.OrderId, request.Amount, request.Method);
                 var dto = Map(payment);
-                return CreatedAtRoute(nameof(GetById), new { id = payment.Id }, dto);
+                return CreatedAtAction(nameof(GetById), new { id = payment.Id }, dto);
             }
             catch (ArgumentException ex)
             {
@@ -72,5 +72,14 @@ namespace SalesService.Controllers
 
         private static PaymentDto Map(SalesService.Entities.Entities.Payment p) =>
             new(p.Id, p.OrderId, p.Amount, p.Method, p.PaidAt);
+
+        // GET: api/payments
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<PaymentDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll()
+        {
+            var payments = await _paymentService.GetAllAsync();
+            return Ok(payments.Select(Map));
+        }
     }
 }

@@ -122,5 +122,8 @@ namespace SalesService.BLL.Services.Order
             long value = BitConverter.ToInt64(bytes, 0);
             return value < 0 ? -value : value;
         }
+
+        public Task<IReadOnlyList<Orders>> GetAllAsync(bool includeDetails = false)
+            => _uow.Orders.GetAllAsync(includeDetails);
     }
 }

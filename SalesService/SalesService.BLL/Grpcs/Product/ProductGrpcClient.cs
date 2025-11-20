@@ -29,12 +29,33 @@ namespace SalesService.BLL.Grpcs.Product
 
             return new GetVariantResponse
             {
-                Id = v.Id,
+                Id = ConvertVariantId(v.Id),
                 Name = v.Name,
                 RangeKm = v.RangeKm == 0 ? null : (long?)v.RangeKm,
                 BasePrice = v.BasePrice == 0 ? null : (double?)v.BasePrice,
                 ModelId = v.ModelId == 0 ? null : (long?)v.ModelId
             };
+        }
+
+        private static Guid LongToGuid(long value)
+        {
+            Span<byte> bytes = stackalloc byte[16];
+            BitConverter.GetBytes(value).CopyTo(bytes);
+            return new Guid(bytes);
+        }
+
+        private static Guid ConvertVariantId(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return Guid.Empty;
+
+            if (Guid.TryParse(id, out var guid))
+                return guid;
+
+            if (long.TryParse(id, out var longValue))
+                return LongToGuid(longValue);
+
+            return Guid.Empty;
         }
     }
 }

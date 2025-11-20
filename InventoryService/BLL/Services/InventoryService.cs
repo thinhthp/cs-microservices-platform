@@ -2,6 +2,7 @@
 using BLL.Interfaces;
 using DAL.Entities;
 using DAL.Interfaces;
+using System;
 
 namespace BLL.Services;
 
@@ -27,7 +28,7 @@ public class InventoryService : IInventoryService
         return MapToDto(createdInventory);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         await _inventoryRepository.DeleteAsync(id);
     }
@@ -38,13 +39,13 @@ public class InventoryService : IInventoryService
         return inventories.Select(MapToDto);
     }
 
-    public async Task<InventoryResponse?> GetByIdAsync(long id)
+    public async Task<InventoryResponse?> GetByIdAsync(Guid id)
     {
         var inventory = await _inventoryRepository.GetByIdAsync(id);
         return inventory != null ? MapToDto(inventory) : null;
     }
 
-    public async Task UpdateAsync(long id, InventoryRequest dto)
+    public async Task UpdateAsync(Guid id, InventoryRequest dto)
     {
         var inventory = await _inventoryRepository.GetByIdAsync(id);
         if (inventory == null)

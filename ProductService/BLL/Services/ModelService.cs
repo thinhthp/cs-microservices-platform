@@ -21,7 +21,7 @@ public class ModelService : IModelService
         return MapToDto(createdModel);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         await _modelRepository.DeleteAsync(id);
     }
@@ -32,13 +32,13 @@ public class ModelService : IModelService
         return models.Select(MapToDto);
     }
 
-    public async Task<ModelResponse?> GetByIdAsync(long id)
+    public async Task<ModelResponse?> GetByIdAsync(Guid id)
     {
         var model = await _modelRepository.GetByIdAsync(id);
         return model == null ? null : MapToDto(model);
     }
 
-    public async Task UpdateAsync(long id, ModelRequest dto)
+    public async Task UpdateAsync(Guid id, ModelRequest dto)
     {
         var model = new Model { Name = dto.Name, BrandId = dto.BrandId };
         await _modelRepository.UpdateAsync(model);

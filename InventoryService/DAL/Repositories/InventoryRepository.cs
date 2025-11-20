@@ -2,6 +2,7 @@
 using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DAL.Repositories;
 
@@ -21,7 +22,7 @@ public class InventoryRepository : IInventoryRepository
         return inventory;
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         var inventory = await _context.Inventories.FindAsync(id);
         if (inventory != null)
@@ -36,14 +37,14 @@ public class InventoryRepository : IInventoryRepository
         return await _context.Inventories.ToListAsync();
     }
 
-    public async Task<Inventory?> GetByIdAsync(long id)
+    public async Task<Inventory?> GetByIdAsync(Guid id)
     {
         return await _context.Inventories.FindAsync(id);
     }
 
     public async Task UpdateAsync(Inventory inventory)
     {
-        _context.Entry(inventory).State = EntityState.Modified;
+        _context.Inventories.Update(inventory);
         await _context.SaveChangesAsync();
     }
 }

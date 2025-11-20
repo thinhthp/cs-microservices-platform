@@ -5,8 +5,8 @@ namespace BLL.Interfaces;
 public interface IModelService
 {
     Task<IEnumerable<ModelResponse>> GetAllAsync();
-    Task<ModelResponse?> GetByIdAsync(long id);
+    Task<ModelResponse?> GetByIdAsync(Guid id);
     Task<ModelResponse> AddAsync(ModelRequest dto);
-    Task UpdateAsync(long id, ModelRequest dto);
-    Task DeleteAsync(long id);
+    Task UpdateAsync(Guid id, ModelRequest dto);
+    Task DeleteAsync(Guid id);
 }

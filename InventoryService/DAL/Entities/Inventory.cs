@@ -1,12 +1,15 @@
-﻿namespace DAL.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAL.Entities;
 
 public partial class Inventory
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
-    public long DealerId { get; set; }
+    public Guid DealerId { get; set; }
 
-    public long? VariantId { get; set; }
+    public Guid? VariantId { get; set; }
 
     public long? Quantity { get; set; }
 

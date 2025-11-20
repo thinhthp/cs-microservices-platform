@@ -22,8 +22,8 @@ public class ModelsController : ControllerBase
         return Ok(models);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<ActionResult<ModelResponse>> GetById(long id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ModelResponse>> GetById(Guid id)
     {
         var model = await _modelService.GetByIdAsync(id);
         if (model == null)
@@ -38,8 +38,8 @@ public class ModelsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = createdModel.Id }, createdModel);
     }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> Update(long id, [FromBody] ModelRequest dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] ModelRequest dto)
     {
         var existingModel = await _modelService.GetByIdAsync(id);
         if (existingModel == null)
@@ -48,8 +48,8 @@ public class ModelsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete(long id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         var existingModel = await _modelService.GetByIdAsync(id);
         if (existingModel == null)

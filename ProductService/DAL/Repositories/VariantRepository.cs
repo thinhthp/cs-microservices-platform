@@ -21,7 +21,7 @@ public class VariantRepository : IVariantRepository
         return variant;
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         var variant = await _context.Variants.FindAsync(id);
         if (variant != null)
@@ -36,7 +36,7 @@ public class VariantRepository : IVariantRepository
         return await _context.Variants.ToListAsync();
     }
 
-    public async Task<Variant?> GetByIdAsync(long id)
+    public async Task<Variant?> GetByIdAsync(Guid id)
     {
         return await _context.Variants.FindAsync(id);
     }

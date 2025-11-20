@@ -5,8 +5,8 @@ namespace DAL.Interfaces;
 public interface IModelRepository
 {
     Task<IEnumerable<Model>> GetAllAsync();
-    Task<Model?> GetByIdAsync(long id);
+    Task<Model?> GetByIdAsync(Guid id);
     Task<Model> AddAsync(Model model);
     Task UpdateAsync(Model model);
-    Task DeleteAsync(long id);
+    Task DeleteAsync(Guid id);
 }

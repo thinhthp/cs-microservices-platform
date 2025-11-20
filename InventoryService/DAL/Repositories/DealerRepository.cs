@@ -2,6 +2,7 @@
 using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DAL.Repositories;
 
@@ -21,7 +22,7 @@ public class DealerRepository : IDealerRepository
         return dealer;
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         var dealer = await _context.Dealers.FindAsync(id);
         if (dealer != null)
@@ -36,14 +37,14 @@ public class DealerRepository : IDealerRepository
         return await _context.Dealers.ToListAsync();
     }
 
-    public async Task<Dealer?> GetByIdAsync(long id)
+    public async Task<Dealer?> GetByIdAsync(Guid id)
     {
         return await _context.Dealers.FindAsync(id);
     }
 
     public async Task UpdateAsync(Dealer dealer)
     {
-        _context.Entry(dealer).State = EntityState.Modified;
+        _context.Dealers.Update(dealer);
         await _context.SaveChangesAsync();
     }
 }

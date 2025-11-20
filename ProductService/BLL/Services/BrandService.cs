@@ -22,7 +22,7 @@ public class BrandService : IBrandService
         return MapToDto(createdBrand);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         await _brandRepository.DeleteAsync(id);
     }
@@ -33,13 +33,13 @@ public class BrandService : IBrandService
         return brands.Select(MapToDto);
     }
 
-    public async Task<BrandResponse?> GetByIdAsync(long id)
+    public async Task<BrandResponse?> GetByIdAsync(Guid id)
     {
         var brand = await _brandRepository.GetByIdAsync(id);
         return brand != null ? MapToDto(brand) : null;
     }
 
-    public async Task UpdateAsync(long id, BrandRequest dto)
+    public async Task UpdateAsync(Guid id, BrandRequest dto)
     {
         var brand = await _brandRepository.GetByIdAsync(id);
         if (brand == null)

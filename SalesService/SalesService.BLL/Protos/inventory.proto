@@ -9,7 +9,7 @@ service InventoryGrpc {
 }
 
 message Dealer {
-  int64 id = 1;
+  string id = 1;
   string code = 2;
   string name = 3;
   string region = 4;

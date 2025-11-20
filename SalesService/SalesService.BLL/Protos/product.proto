@@ -17,7 +17,7 @@ message Variant {
   string name = 2;
   int64 range_km = 3;
   double base_price = 4;
-  int64 model_id = 5;
+  string model_id = 5;
 }
 
 message GetVariantReply {

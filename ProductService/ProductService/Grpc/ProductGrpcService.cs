@@ -18,7 +18,7 @@ namespace ProductService.Grpc
             if (request is null || request.Id <= 0)
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Variant id must be positive."));
 
-            var variantDto = await _variantService.GetByIdAsync(request.Id);
+            var variantDto = await _variantService.GetByIdAsync(LongToGuid(request.Id));
             if (variantDto is null)
                 throw new RpcException(new Status(StatusCode.NotFound, $"Variant {request.Id} not found."));
 
@@ -26,15 +26,43 @@ namespace ProductService.Grpc
             {
                 Variant = new Variant
                 {
-                    Id = variantDto.Id,
+                    Id = variantDto.Id.ToString(),
                     Name = variantDto.Name,
                     RangeKm = variantDto.RangeKm ?? 0,
                     BasePrice = variantDto.BasePrice ?? 0,
-                    ModelId = variantDto.ModelId ?? 0
+                    ModelId = variantDto.ModelId.ToString() ?? ""
                 }
             };
 
             return reply;
+        }
+
+        private static Guid ConvertVariantId(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return Guid.Empty;
+
+            if (Guid.TryParse(id, out var guid))
+                return guid;
+
+            if (long.TryParse(id, out var longValue))
+                return LongToGuid(longValue);
+
+            return Guid.Empty;
+        }
+
+        private static Guid LongToGuid(long value)
+        {
+            Span<byte> bytes = stackalloc byte[16];
+            BitConverter.GetBytes(value).CopyTo(bytes);
+            return new Guid(bytes);
+        }
+
+        private static long GuidToLong(Guid guid)
+        {
+            Span<byte> bytes = stackalloc byte[16];
+            guid.TryWriteBytes(bytes);
+            return BitConverter.ToInt64(bytes);
         }
     }
 }

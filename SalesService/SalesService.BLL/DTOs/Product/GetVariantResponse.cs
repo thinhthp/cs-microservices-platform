@@ -16,6 +16,6 @@ namespace SalesService.BLL.DTOs.Product
 
         public double? BasePrice { get; set; }
 
-        public long? ModelId { get; set; }
+        public Guid? ModelId { get; set; }
     }
 }

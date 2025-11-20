@@ -26,7 +26,7 @@ namespace SalesService.BLL.Grpcs.Inventory
 
             return new GetDealerResponse
             {
-                Id = LongToGuid(dealer.Id),
+                Id = ConvertDealerId(dealer.Id),
                 Code = dealer.Code,
                 Name = dealer.Name,
                 Region = dealer.Region
@@ -38,6 +38,20 @@ namespace SalesService.BLL.Grpcs.Inventory
             Span<byte> bytes = stackalloc byte[16];
             BitConverter.GetBytes(value).CopyTo(bytes);
             return new Guid(bytes);
+        }
+
+        private static Guid ConvertDealerId(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return Guid.Empty;
+
+            if (Guid.TryParse(id, out var guid))
+                return guid;
+
+            if (long.TryParse(id, out var longValue))
+                return LongToGuid(longValue);
+
+            return Guid.Empty;
         }
     }
 }

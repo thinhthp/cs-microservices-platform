@@ -33,7 +33,7 @@ namespace SalesService.BLL.Grpcs.Product
                 Name = v.Name,
                 RangeKm = v.RangeKm == 0 ? null : (long?)v.RangeKm,
                 BasePrice = v.BasePrice == 0 ? null : (double?)v.BasePrice,
-                ModelId = v.ModelId == 0 ? null : (long?)v.ModelId
+                ModelId = ConvertVariantId(v.ModelId.ToString())
             };
         }
 

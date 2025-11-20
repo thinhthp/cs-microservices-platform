@@ -61,6 +61,8 @@ services:
     build:
       context: .
       dockerfile: MailService/MailService/Dockerfile
+    env_file:
+      - .env
     networks:
       - backend
     ports:

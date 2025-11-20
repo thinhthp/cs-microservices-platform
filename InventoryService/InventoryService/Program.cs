@@ -35,6 +35,14 @@ builder.Services.AddSwaggerGen();
 // Health checks
 builder.Services.AddHealthChecks();
 
+// add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAllOrigins",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+    );
+
 // gRPC server
 builder.Services.AddGrpc();
 // Kestrel: allow HTTP/1.1 + HTTP/2 on port 80 (h2c for gRPC)
@@ -64,5 +72,7 @@ app.MapGrpcService<InventoryGrpcService>();
 
 // Liveness endpoint for Docker/K8s
 app.MapHealthChecks("/health");
+
+app.UseCors("AllowAllOrigins");
 
 app.Run();

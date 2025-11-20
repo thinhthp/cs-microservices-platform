@@ -1,0 +1,213 @@
+openapi: 3.0.1
+info:
+  title: ApiGateway
+  version: '1.0'
+paths:
+  /api/accounts/register:
+    post:
+      tags:
+        - Account
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+            default: User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: OK
+  /api/accounts/login:
+    post:
+      tags:
+        - Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: OK
+  /api/accounts/google-signin:
+    get:
+      tags:
+        - Account
+      responses:
+        '200':
+          description: OK
+  /api/accounts/google-response:
+    get:
+      tags:
+        - Account
+      responses:
+        '200':
+          description: OK
+  /api/accounts/me:
+    get:
+      tags:
+        - Account
+      responses:
+        '200':
+          description: OK
+  /api/accounts/confirm-email:
+    get:
+      tags:
+        - Account
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: token
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/accounts/forgot-password:
+    post:
+      tags:
+        - Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '200':
+          description: OK
+  /api/accounts/reset-password:
+    get:
+      tags:
+        - Account
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: token
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+        - Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    ForgotPasswordRequest:
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          format: email
+      additionalProperties: false
+    LoginRequest:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        twoFactorCode:
+          type: string
+          nullable: true
+        twoFactorRecoveryCode:
+          type: string
+          nullable: true
+      additionalProperties: false
+    RegisterRequest:
+      required:
+        - email
+        - name
+        - password
+        - phone
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          format: email
+        password:
+          minLength: 1
+          type: string
+        name:
+          minLength: 1
+          type: string
+        phone:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    ResetPasswordRequest:
+      required:
+        - newPassword
+        - token
+        - userId
+      type: object
+      properties:
+        userId:
+          minLength: 1
+          type: string
+        token:
+          minLength: 1
+          type: string
+        newPassword:
+          minLength: 1
+          type: string
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: http
+      description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"'
+      scheme: Bearer
+      bearerFormat: JWT
+security:
+  - Bearer: [ ]

@@ -50,5 +50,7 @@ namespace SalesService.BLL.Services.Payment
         public Task<Entities.Entities.Payment?> GetByIdAsync(Guid id) => _uow.Payments.GetByIdAsync(id);
 
         public Task<Entities.Entities.Payment?> GetByOrderAsync(Guid orderId) => _uow.Payments.GetByOrderIdAsync(orderId);
+
+        public Task<IReadOnlyList<Entities.Entities.Payment>> GetAllAsync() => _uow.Payments.GetAllAsync();
     }
 }

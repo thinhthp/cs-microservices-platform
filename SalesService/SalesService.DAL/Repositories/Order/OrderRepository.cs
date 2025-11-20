@@ -56,5 +56,20 @@ namespace SalesService.DAL.Repositories.Order
             if (order == null) return;
             order.Status = status;
         }
+
+        public async Task<IReadOnlyList<Orders>> GetAllAsync(bool includeDetails = false)
+        {
+            IQueryable<Orders> query = _salesContext.Orders;
+            if (includeDetails)
+            {
+                query = query
+                    .Include(o => o.Items)
+                    .Include(o => o.Payment)
+                    .Include(o => o.Customer);
+            }
+            return await query
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+        }
     }
 }

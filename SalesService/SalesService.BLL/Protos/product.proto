@@ -13,7 +13,7 @@ message GetVariantRequest {
 }
 
 message Variant {
-  int64 id = 1;
+  string id = 1;
   string name = 2;
   int64 range_km = 3;
   double base_price = 4;

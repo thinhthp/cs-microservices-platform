@@ -29,6 +29,7 @@ services:
       - backend
     ports:
       - "5130:80"
+      - "5002:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=80
@@ -41,6 +42,7 @@ services:
       - backend
     ports:
       - "5199:80"
+      - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=80

@@ -14,6 +14,7 @@ namespace SalesService.BLL.Services.Order
         Task<Orders?> GetByIdAsync(Guid orderId, bool includeDetails = false);
         Task<IReadOnlyList<Orders>> GetByCustomerAsync(Guid customerId, bool includeDetails = false);
         Task UpdateStatusAsync(Guid orderId, OrderStatus status);
+        Task<IReadOnlyList<Orders>> GetAllAsync(bool includeDetails = false);
     }
 
     public record OrderItemInput(Guid VariantId, int Quantity, decimal UnitPrice);

@@ -14,5 +14,6 @@ namespace SalesService.DAL.Repositories.Order
         Task AddAsync(Orders order);
         Task<IReadOnlyList<Orders>> GetByCustomerAsync(Guid customerId, bool includeDetails = false);
         Task UpdateStatusAsync(Guid orderId, OrderStatus status);
+        Task<IReadOnlyList<Orders>> GetAllAsync(bool includeDetails = false);
     }
 }

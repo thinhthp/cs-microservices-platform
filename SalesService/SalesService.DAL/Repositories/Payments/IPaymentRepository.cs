@@ -11,5 +11,6 @@ namespace SalesService.DAL.Repositories.Payments
         Task<SalesService.Entities.Entities.Payment?> GetByIdAsync(Guid id);
         Task<SalesService.Entities.Entities.Payment?> GetByOrderIdAsync(Guid orderId);
         Task AddAsync(SalesService.Entities.Entities.Payment payment);
+        Task<IReadOnlyList<SalesService.Entities.Entities.Payment>> GetAllAsync();
     }
 }

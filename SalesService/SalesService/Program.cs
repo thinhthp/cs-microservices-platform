@@ -8,6 +8,9 @@ using SalesService.DAL.Common;
 using SalesService.DAL.Data;
 using SalesService.Extensions;
 
+// Enable HTTP/2 unencrypted support for gRPC
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,14 +36,14 @@ builder.Services.AddDbContext<SalesContext>(options =>
 // Product service
 builder.Services.AddGrpcClient<ProductService.Grpc.ProductGrpc.ProductGrpcClient>(o =>
 {
-    o.Address = new Uri("http://productservice:80");
+    o.Address = new Uri("http://productservice:5001");
 });
 builder.Services.AddScoped<IProductGrpcClient, ProductGrpcClient>();
 
 // Inventory service
 builder.Services.AddGrpcClient<InventoryService.Grpc.InventoryGrpc.InventoryGrpcClient>(o =>
 {
-    o.Address = new Uri("http://inventoryservice:80");
+    o.Address = new Uri("http://inventoryservice:5001");
 });
 builder.Services.AddScoped<IInventoryGrpcClient, InventoryGrpcClient>();
 
@@ -70,7 +73,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

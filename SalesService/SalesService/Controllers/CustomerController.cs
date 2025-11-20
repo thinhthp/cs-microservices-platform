@@ -30,7 +30,7 @@ namespace SalesService.Controllers
             {
                 var customer = await _customerService.CreateAsync(request.FullName, request.Phone, request.Email);
                 var dto = Map(customer);
-                return CreatedAtRoute(nameof(GetById), new { id = customer.Id }, dto);
+                return CreatedAtAction(nameof(GetById), new { id = customer.Id }, dto);
             }
             catch (ArgumentException ex)
             {

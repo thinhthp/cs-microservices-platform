@@ -16,7 +16,7 @@ public class ModelService : IModelService
 
     public async Task<ModelResponse> AddAsync(ModelRequest dto)
     {
-        var model = new Model { Name = dto.Name };
+        var model = new Model { Name = dto.Name, BrandId = dto.BrandId };
         var createdModel = await _modelRepository.AddAsync(model);
         return MapToDto(createdModel);
     }
@@ -40,12 +40,17 @@ public class ModelService : IModelService
 
     public async Task UpdateAsync(long id, ModelRequest dto)
     {
-        var model = new Model { Id = id, Name = dto.Name };
+        var model = new Model { Name = dto.Name, BrandId = dto.BrandId };
         await _modelRepository.UpdateAsync(model);
     }
 
     private ModelResponse MapToDto(Model model)
     {
-        return new ModelResponse { Id = model.Id, Name = model.Name };
+        return new ModelResponse
+        {
+            Id = model.Id,
+            Name = model.Name,
+            BrandId = model.BrandId,
+        };
     }
 }

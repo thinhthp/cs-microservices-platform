@@ -4,6 +4,8 @@ using DAL.Data;
 using DAL.Interfaces;
 using DAL.Repositories;
 using InventoryService.Extensions;
+using InventoryService.Grpc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +42,13 @@ builder.Services.AddCors(options =>
         "AllowAllOrigins",
         builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
     );
+
+// gRPC server
+builder.Services.AddGrpc();
+// Kestrel: allow HTTP/1.1 + HTTP/2 on port 80 (h2c for gRPC)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80, o => o.Protocols = HttpProtocols.Http1AndHttp2);
 });
 
 var app = builder.Build();
@@ -57,6 +66,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// gRPC
+app.MapGrpcService<InventoryGrpcService>();
 
 // Liveness endpoint for Docker/K8s
 app.MapHealthChecks("/health");

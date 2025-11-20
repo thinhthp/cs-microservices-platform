@@ -1,0 +1,25 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "ProductService.Grpc";
+
+package product;
+
+service ProductGrpc {
+  rpc GetVariant (GetVariantRequest) returns (GetVariantReply);
+}
+
+message GetVariantRequest {
+  int64 id = 1;
+}
+
+message Variant {
+  int64 id = 1;
+  string name = 2;
+  int64 range_km = 3;
+  double base_price = 4;
+  int64 model_id = 5;
+}
+
+message GetVariantReply {
+  Variant variant = 1;
+}

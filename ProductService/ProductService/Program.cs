@@ -3,8 +3,10 @@ using BLL.Services;
 using DAL.Data.DbFirst;
 using DAL.Interfaces;
 using DAL.Repositories;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using ProductService.Extensions;
+using ProductService.Grpc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,14 @@ builder.Services.AddSwaggerGen();
 // Health checks
 builder.Services.AddHealthChecks();
 
+// gRPC server
+builder.Services.AddGrpc();
+// Kestrel: allow HTTP/1.1 + HTTP/2 on port 80 (h2c for gRPC)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80, o => o.Protocols = HttpProtocols.Http1AndHttp2);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +60,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// gRPC
+app.MapGrpcService<ProductGrpcService>();
 
 // Liveness endpoint for Docker/K8s
 app.MapHealthChecks("/health");

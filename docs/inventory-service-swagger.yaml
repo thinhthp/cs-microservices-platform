@@ -1,0 +1,185 @@
+openapi: 3.0.1
+info:
+  title: InventoryService
+  version: '1.0'
+paths:
+  /api/Dealers:
+    get:
+      tags:
+        - Dealers
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+        - Dealers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DealerRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/DealerRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/DealerRequest'
+      responses:
+        '200':
+          description: OK
+  '/api/Dealers/{id}':
+    get:
+      tags:
+        - Dealers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+    put:
+      tags:
+        - Dealers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DealerRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/DealerRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/DealerRequest'
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Dealers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+  /api/Inventories:
+    get:
+      tags:
+        - Inventories
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+        - Inventories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/InventoryRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/InventoryRequest'
+      responses:
+        '200':
+          description: OK
+  '/api/Inventories/{id}':
+    get:
+      tags:
+        - Inventories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+    put:
+      tags:
+        - Inventories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/InventoryRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/InventoryRequest'
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Inventories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    DealerRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        region:
+          type: string
+          nullable: true
+      additionalProperties: false
+    InventoryRequest:
+      type: object
+      properties:
+        dealerId:
+          type: integer
+          format: int64
+        variantId:
+          type: integer
+          format: int64
+          nullable: true
+        quantity:
+          type: integer
+          format: int64
+          nullable: true
+      additionalProperties: false

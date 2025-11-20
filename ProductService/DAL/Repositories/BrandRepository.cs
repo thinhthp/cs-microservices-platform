@@ -21,7 +21,7 @@ public class BrandRepository : IBrandRepository
         return brand;
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         var brand = await _context.Brands.FindAsync(id);
         if (brand != null)
@@ -36,7 +36,7 @@ public class BrandRepository : IBrandRepository
         return await _context.Brands.ToListAsync();
     }
 
-    public async Task<Brand?> GetByIdAsync(long id)
+    public async Task<Brand?> GetByIdAsync(Guid id)
     {
         return await _context.Brands.FindAsync(id);
     }

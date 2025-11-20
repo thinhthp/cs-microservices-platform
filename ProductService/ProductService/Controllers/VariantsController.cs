@@ -22,8 +22,8 @@ public class VariantsController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<ActionResult<VariantResponse>> GetById(long id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<VariantResponse>> GetById(Guid id)
     {
         var item = await _variantService.GetByIdAsync(id);
         if (item == null)
@@ -38,8 +38,8 @@ public class VariantsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = createdVariant.Id }, createdVariant);
     }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> Update(long id, [FromBody] VariantRequest dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] VariantRequest dto)
     {
         var existingVariant = await _variantService.GetByIdAsync(id);
         if (existingVariant == null)
@@ -48,8 +48,8 @@ public class VariantsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete(long id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         var existingVariant = await _variantService.GetByIdAsync(id);
         if (existingVariant == null)

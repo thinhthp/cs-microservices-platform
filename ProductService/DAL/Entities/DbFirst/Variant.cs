@@ -1,8 +1,11 @@
-﻿namespace DAL.Entities.DbFirst;
+﻿using System;
+using System.Collections.Generic;
+
+namespace DAL.Entities.DbFirst;
 
 public partial class Variant
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     public string Name { get; set; } = null!;
 
@@ -10,7 +13,7 @@ public partial class Variant
 
     public double? BasePrice { get; set; }
 
-    public long? ModelId { get; set; }
+    public Guid? ModelId { get; set; }
 
     public virtual Model? Model { get; set; }
 }

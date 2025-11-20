@@ -21,7 +21,7 @@ public class ModelRepository : IModelRepository
         return model;
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         var model = await _context.Models.FindAsync(id);
         if (model != null)
@@ -36,7 +36,7 @@ public class ModelRepository : IModelRepository
         return await _context.Models.ToListAsync();
     }
 
-    public async Task<Model?> GetByIdAsync(long id)
+    public async Task<Model?> GetByIdAsync(Guid id)
     {
         return await _context.Models.FindAsync(id);
     }

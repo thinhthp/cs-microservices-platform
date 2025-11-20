@@ -44,9 +44,11 @@ builder.Services.AddCors(options =>
         "AllowAllOrigins",
         builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
     );
+});
 
 // gRPC server
 builder.Services.AddGrpc();
+
 // Kestrel: allow HTTP/1.1 + HTTP/2 on port 80 (h2c for gRPC)
 builder.WebHost.ConfigureKestrel(options =>
 {

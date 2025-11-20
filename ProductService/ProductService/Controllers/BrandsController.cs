@@ -22,8 +22,8 @@ public class BrandsController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<ActionResult<BrandResponse>> GetById(long id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<BrandResponse>> GetById(Guid id)
     {
         var item = await _brandService.GetByIdAsync(id);
         if (item == null)
@@ -38,8 +38,8 @@ public class BrandsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = createdBrand.Id }, createdBrand);
     }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> Update(long id, [FromBody] BrandRequest dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] BrandRequest dto)
     {
         var existingBrand = await _brandService.GetByIdAsync(id);
         if (existingBrand == null)
@@ -48,8 +48,8 @@ public class BrandsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete(long id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         var existingBrand = await _brandService.GetByIdAsync(id);
         if (existingBrand == null)

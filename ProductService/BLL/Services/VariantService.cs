@@ -27,7 +27,7 @@ public class VariantService : IVariantService
         return MapToDto(createdVariant);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         await _variantRepository.DeleteAsync(id);
     }
@@ -38,13 +38,13 @@ public class VariantService : IVariantService
         return variants.Select(MapToDto);
     }
 
-    public async Task<VariantResponse?> GetByIdAsync(long id)
+    public async Task<VariantResponse?> GetByIdAsync(Guid id)
     {
         var variant = await _variantRepository.GetByIdAsync(id);
         return variant == null ? null : MapToDto(variant);
     }
 
-    public async Task UpdateAsync(long id, VariantRequest dto)
+    public async Task UpdateAsync(Guid id, VariantRequest dto)
     {
         var variant = new Variant
         {

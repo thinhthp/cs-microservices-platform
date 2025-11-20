@@ -11,5 +11,6 @@ namespace SalesService.BLL.Services.Payment
         Task<SalesService.Entities.Entities.Payment> CreateAsync(Guid orderId, decimal amount, string method);
         Task<SalesService.Entities.Entities.Payment?> GetByIdAsync(Guid id);
         Task<SalesService.Entities.Entities.Payment?> GetByOrderAsync(Guid orderId);
+        Task<IReadOnlyList<SalesService.Entities.Entities.Payment>> GetAllAsync();
     }
 }

@@ -26,11 +26,18 @@ namespace SalesService.BLL.Grpcs.Inventory
 
             return new GetDealerResponse
             {
-                Id = dealer.Id,
+                Id = LongToGuid(dealer.Id),
                 Code = dealer.Code,
                 Name = dealer.Name,
                 Region = dealer.Region
             };
+        }
+
+        private static Guid LongToGuid(long value)
+        {
+            Span<byte> bytes = stackalloc byte[16];
+            BitConverter.GetBytes(value).CopyTo(bytes);
+            return new Guid(bytes);
         }
     }
 }

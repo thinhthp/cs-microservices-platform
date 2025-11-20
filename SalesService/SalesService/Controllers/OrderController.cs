@@ -33,7 +33,7 @@ namespace SalesService.Controllers
                 var items = request.Items.Select(i => new OrderItemInput(i.VariantId, i.Quantity, i.UnitPrice));
                 var order = await _orderService.CreateOrderAsync(request.CustomerId, request.DealerId, items);
                 var dto = Map(order);
-                return CreatedAtRoute(nameof(GetById), new { id = order.Id }, dto);
+                return CreatedAtAction(nameof(GetById), new { id = order.Id }, dto);
             }
             catch (ArgumentException ex)
             {
@@ -106,5 +106,14 @@ namespace SalesService.Controllers
                     ? o.Items.Select(i => new OrderItemDto(i.Id, i.VariantId, i.Quantity, i.UnitPrice)).ToList()
                     : null
             );
+
+        // GET: api/orders?includeDetails=true
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<OrderDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll([FromQuery] bool includeDetails = false)
+        {
+            var orders = await _orderService.GetAllAsync(includeDetails);
+            return Ok(orders.Select(o => Map(o, includeDetails)));
+        }
     }
 }

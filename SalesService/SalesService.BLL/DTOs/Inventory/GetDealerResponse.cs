@@ -8,7 +8,7 @@ namespace SalesService.BLL.DTOs.Inventory
 {
     public sealed class GetDealerResponse
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Code { get; set; } = null!;
 

@@ -32,5 +32,12 @@ namespace SalesService.DAL.Repositories.Payments
         {
             await _salesContext.Payments.AddAsync(payment);
         }
+
+        public async Task<IReadOnlyList<Payment>> GetAllAsync()
+        {
+            return await _salesContext.Payments
+                .OrderByDescending(p => p.PaidAt)
+                .ToListAsync();
+        }
     }
 }

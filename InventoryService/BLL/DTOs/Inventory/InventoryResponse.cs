@@ -1,12 +1,14 @@
-﻿namespace BLL.DTOs.Inventory;
+﻿using System;
+
+namespace BLL.DTOs.Inventory;
 
 public class InventoryResponse
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
-    public long DealerId { get; set; }
+    public Guid DealerId { get; set; }
 
-    public long? VariantId { get; set; }
+    public Guid? VariantId { get; set; }
 
     public long? Quantity { get; set; }
 }

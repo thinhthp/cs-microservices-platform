@@ -2,6 +2,7 @@
 using BLL.Interfaces;
 using DAL.Entities;
 using DAL.Interfaces;
+using System;
 
 namespace BLL.Services;
 
@@ -26,7 +27,7 @@ public class DealerService : IDealerService
         return MapToDto(createdDealer);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         await _dealerRepository.DeleteAsync(id);
     }
@@ -37,13 +38,13 @@ public class DealerService : IDealerService
         return dealers.Select(MapToDto);
     }
 
-    public async Task<DealerResponse?> GetByIdAsync(long id)
+    public async Task<DealerResponse?> GetByIdAsync(Guid id)
     {
         var dealer = await _dealerRepository.GetByIdAsync(id);
         return dealer != null ? MapToDto(dealer) : null;
     }
 
-    public async Task UpdateAsync(long id, DealerRequest dto)
+    public async Task UpdateAsync(Guid id, DealerRequest dto)
     {
         var dealer = await _dealerRepository.GetByIdAsync(id);
         if (dealer == null)

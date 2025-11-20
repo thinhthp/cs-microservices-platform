@@ -1,12 +1,13 @@
 ﻿using BLL.DTOs.Inventory;
+using System;
 
 namespace BLL.Interfaces;
 
 public interface IInventoryService
 {
     Task<IEnumerable<InventoryResponse>> GetAllAsync();
-    Task<InventoryResponse?> GetByIdAsync(long id);
+    Task<InventoryResponse?> GetByIdAsync(Guid id);
     Task<InventoryResponse> AddAsync(InventoryRequest dto);
-    Task UpdateAsync(long id, InventoryRequest dto);
-    Task DeleteAsync(long id);
+    Task UpdateAsync(Guid id, InventoryRequest dto);
+    Task DeleteAsync(Guid id);
 }

@@ -1,6 +1,7 @@
 ﻿using BLL.DTOs.Dealer;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace InventoryService.Controllers;
 
@@ -23,8 +24,8 @@ public class DealersController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:long}")]
-    public async Task<IActionResult> GetById(long id)
+    [Route("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
     {
         var dealer = await _dealerService.GetByIdAsync(id);
         if (dealer == null)
@@ -41,8 +42,8 @@ public class DealersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = createdDealer.Id }, createdDealer);
     }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> Update(long id, [FromBody] DealerRequest dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] DealerRequest dto)
     {
         var existingDealer = await _dealerService.GetByIdAsync(id);
         if (existingDealer == null)
@@ -51,8 +52,8 @@ public class DealersController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete(long id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         var existingDealer = await _dealerService.GetByIdAsync(id);
         if (existingDealer == null)

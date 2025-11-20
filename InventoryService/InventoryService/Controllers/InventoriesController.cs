@@ -1,6 +1,7 @@
 ﻿using BLL.DTOs.Inventory;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace InventoryService.Controllers;
 
@@ -22,8 +23,8 @@ public class InventoriesController : ControllerBase
         return Ok(inventories);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetById(long id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
     {
         var inventory = await _inventoryService.GetByIdAsync(id);
         if (inventory == null)
@@ -40,8 +41,8 @@ public class InventoriesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = createdInventory.Id }, createdInventory);
     }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> Update(long id, [FromBody] InventoryRequest dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] InventoryRequest dto)
     {
         var existingInventory = await _inventoryService.GetByIdAsync(id);
         if (existingInventory == null)
@@ -52,8 +53,8 @@ public class InventoriesController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete(long id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         var existingInventory = await _inventoryService.GetByIdAsync(id);
         if (existingInventory == null)

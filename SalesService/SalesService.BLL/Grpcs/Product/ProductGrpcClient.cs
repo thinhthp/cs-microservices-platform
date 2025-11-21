@@ -19,9 +19,9 @@ namespace SalesService.BLL.Grpcs.Product
             _client = client;
         }
 
-        public async Task<GetVariantResponse> GetVariantById(long id)
+        public async Task<GetVariantResponse> GetVariantById(Guid id)
         {
-            var reply = await _client.GetVariantAsync(new GetVariantRequest { Id = id });
+            var reply = await _client.GetVariantAsync(new GetVariantRequest { Id = id.ToString() });
 
             var v = reply?.Variant;
             if (v is null)

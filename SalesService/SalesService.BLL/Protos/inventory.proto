@@ -16,7 +16,7 @@ message Dealer {
 }
 
 message GetDealerRequest {
-  int64 id = 1;
+  string id = 1;
 }
 
 message GetDealerReply {

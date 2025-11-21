@@ -15,10 +15,10 @@ namespace ProductService.Grpc
 
         public override async Task<GetVariantReply> GetVariant(GetVariantRequest request, ServerCallContext context)
         {
-            if (request is null || request.Id <= 0)
+            if (request is null)
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Variant id must be positive."));
 
-            var variantDto = await _variantService.GetByIdAsync(LongToGuid(request.Id));
+            var variantDto = await _variantService.GetByIdAsync(ConvertVariantId(request.Id));
             if (variantDto is null)
                 throw new RpcException(new Status(StatusCode.NotFound, $"Variant {request.Id} not found."));
 

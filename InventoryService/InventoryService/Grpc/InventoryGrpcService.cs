@@ -1,54 +1,44 @@
 ﻿using BLL.Interfaces;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
 
 namespace InventoryService.Grpc
 {
     public class InventoryGrpcService : InventoryGrpc.InventoryGrpcBase
     {
         private readonly IDealerService _dealerService;
+        private readonly ILogger<InventoryGrpcService> _logger;
 
-        public InventoryGrpcService(IDealerService dealerService)
+        public InventoryGrpcService(IDealerService dealerService, ILogger<InventoryGrpcService> logger)
         {
             _dealerService = dealerService;
+            _logger = logger;
         }
 
         public override async Task<GetDealerReply> GetDealer(GetDealerRequest request, ServerCallContext context)
         {
-            var dealerDto = await _dealerService.GetByIdAsync(LongToGuid(request.Id));
-            if (dealerDto is null)
+            if (!Guid.TryParse(request.Id, out var dealerId))
+                throw new RpcException(new Status(StatusCode.InvalidArgument, $"Invalid dealer id '{request.Id ?? "<null>"}'."));
+
+            var dealer = await _dealerService.GetByIdAsync(dealerId);
+            if (dealer is null)
+            {
+                _logger.LogWarning("Dealer not found. Id={Id}", request.Id);
                 throw new RpcException(new Status(StatusCode.NotFound, $"Dealer '{request.Id}' not found."));
+            }
+
+            _logger.LogInformation("Dealer found. Id={Id} Code={Code}", dealer.Id, dealer.Code);
 
             return new GetDealerReply
             {
                 Dealer = new Dealer
                 {
-                    Id = dealerDto.Id.ToString(),
-                    Code = dealerDto.Code,
-                    Name = dealerDto.Name ?? string.Empty,
-                    Region = dealerDto.Region ?? string.Empty
+                    Id = dealer.Id.ToString(),
+                    Code = dealer.Code,
+                    Name = dealer.Name ?? string.Empty,
+                    Region = dealer.Region ?? string.Empty
                 }
             };
-        }
-
-        private static Guid ConvertVariantId(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-                return Guid.Empty;
-
-            if (Guid.TryParse(id, out var guid))
-                return guid;
-
-            if (long.TryParse(id, out var longValue))
-                return LongToGuid(longValue);
-
-            return Guid.Empty;
-        }
-
-        private static Guid LongToGuid(long value)
-        {
-            Span<byte> bytes = stackalloc byte[16];
-            BitConverter.GetBytes(value).CopyTo(bytes);
-            return new Guid(bytes);
         }
     }
 }

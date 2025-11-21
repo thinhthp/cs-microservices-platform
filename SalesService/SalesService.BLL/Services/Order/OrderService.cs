@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SalesService.BLL.DTOs.Inventory;
 using SalesService.BLL.Grpcs.Inventory;
 using SalesService.BLL.Grpcs.Product;
 using SalesService.DAL.Common;
@@ -7,7 +8,6 @@ using SalesService.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SalesService.BLL.Services.Order
@@ -35,19 +35,34 @@ namespace SalesService.BLL.Services.Order
         {
             if (customerId == Guid.Empty) throw new ArgumentException("CustomerId required.", nameof(customerId));
             if (dealerId == Guid.Empty) throw new ArgumentException("DealerId required.", nameof(dealerId));
-            var itemList = items?.ToList() ?? new List<OrderItemInput>();
-            if (itemList.Count == 0) throw new ArgumentException("At least one item required.", nameof(items));
 
-            var customer = await _uow.Customers.GetByIdAsync(customerId);
-            if (customer is null)
-                throw new KeyNotFoundException("Customer not found.");
+            var itemList = items?.ToList();
+            if (itemList is null || itemList.Count == 0)
+                throw new ArgumentException("At least one item required.", nameof(items));
 
-            var externalDealerId = MapGuidToLong(dealerId);
-            var dealerGrpc = await _inventoryClient.GetDealerById(externalDealerId);
+            var customer = await _uow.Customers.GetByIdAsync(customerId)
+                ?? throw new KeyNotFoundException("Customer not found.");
+
+            GetDealerResponse? dealerGrpc;
+            try
+            {
+                dealerGrpc = await _inventoryClient.GetDealerByIdAsync(dealerId);
+            }
+            catch (Grpc.Core.RpcException ex)
+            {
+                _logger.LogWarning("Inventory gRPC lookup failed. dealerId={DealerId} statusCode={StatusCode} detail={Detail}",
+                    dealerId, ex.StatusCode, ex.Status.Detail);
+                throw new KeyNotFoundException($"Dealer lookup failed in Inventory service. dealerId={dealerId} status={ex.StatusCode}");
+            }
+
             if (dealerGrpc is null)
-                throw new KeyNotFoundException("Dealer not found in Inventory service.");
-            _logger.LogDebug("Validated dealer via gRPC. Internal {DealerId} -> External {ExternalDealerId} Code={Code}.",
-                dealerId, externalDealerId, dealerGrpc.Code);
+            {
+                var msg = $"Dealer not found in Inventory service. dealerId={dealerId}";
+                _logger.LogWarning(msg);
+                throw new KeyNotFoundException(msg);
+            }
+
+            _logger.LogDebug("Validated dealer via gRPC. dealerId={DealerId}.", dealerId);
 
             var order = new Orders
             {
@@ -64,8 +79,7 @@ namespace SalesService.BLL.Services.Order
                 if (input.Quantity <= 0) throw new ArgumentException("Quantity must be > 0.");
                 if (input.UnitPrice < 0) throw new ArgumentException("UnitPrice must be >= 0.");
 
-                var externalVariantId = MapGuidToLong(input.VariantId);
-                var variantGrpc = await _productClient.GetVariantById(externalVariantId);
+                var variantGrpc = await _productClient.GetVariantById(input.VariantId);
                 if (variantGrpc is null)
                     throw new KeyNotFoundException($"Variant {input.VariantId} not found in Product service.");
 
@@ -73,7 +87,7 @@ namespace SalesService.BLL.Services.Order
                 if (unitPrice == 0 && variantGrpc.BasePrice.HasValue)
                 {
                     unitPrice = (decimal)variantGrpc.BasePrice.Value;
-                    _logger.LogDebug("Unit price for Variant {VariantId} filled from gRPC BasePrice={BasePrice}.",
+                    _logger.LogDebug("Unit price for variant {VariantId} filled from gRPC basePrice={BasePrice}.",
                         input.VariantId, unitPrice);
                 }
 
@@ -92,8 +106,9 @@ namespace SalesService.BLL.Services.Order
             await _uow.Orders.AddAsync(order);
             await _uow.SaveChangesAsync();
 
-            _logger.LogInformation("Order {OrderId} created for Customer {CustomerId} with {ItemCount} items. Total={Total}.",
-                order.Id, customerId, order.Items.Count, order.TotalAmount);
+            _logger.LogInformation("Order {OrderId} created for customer {CustomerId} dealer {DealerId} items={ItemCount} total={Total}.",
+                order.Id, customerId, dealerId, order.Items.Count, order.TotalAmount);
+
             return order;
         }
 
@@ -105,8 +120,8 @@ namespace SalesService.BLL.Services.Order
 
         public async Task UpdateStatusAsync(Guid orderId, OrderStatus status)
         {
-            var order = await _uow.Orders.GetByIdAsync(orderId);
-            if (order is null) throw new KeyNotFoundException("Order not found.");
+            var order = await _uow.Orders.GetByIdAsync(orderId)
+                ?? throw new KeyNotFoundException("Order not found.");
 
             if (order.Status == OrderStatus.Cancelled)
                 throw new InvalidOperationException("Cannot change status of cancelled order.");
@@ -114,13 +129,6 @@ namespace SalesService.BLL.Services.Order
             await _uow.Orders.UpdateStatusAsync(orderId, status);
             await _uow.SaveChangesAsync();
             _logger.LogInformation("Order {OrderId} status changed to {Status}.", orderId, status);
-        }
-
-        private static long MapGuidToLong(Guid id)
-        {
-            var bytes = id.ToByteArray();
-            long value = BitConverter.ToInt64(bytes, 0);
-            return value < 0 ? -value : value;
         }
 
         public Task<IReadOnlyList<Orders>> GetAllAsync(bool includeDetails = false)

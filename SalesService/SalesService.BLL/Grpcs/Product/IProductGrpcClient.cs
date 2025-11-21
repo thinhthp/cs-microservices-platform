@@ -9,6 +9,6 @@ namespace SalesService.BLL.Grpcs.Product
 {
     public interface IProductGrpcClient
     {
-        Task<GetVariantResponse> GetVariantById(long id);
+        Task<GetVariantResponse> GetVariantById(Guid id);
     }
 }

@@ -5,8 +5,8 @@ namespace BLL.Interfaces;
 public interface IVariantService
 {
     Task<IEnumerable<VariantResponse>> GetAllAsync();
-    Task<VariantResponse?> GetByIdAsync(long id);
+    Task<VariantResponse?> GetByIdAsync(Guid id);
     Task<VariantResponse> AddAsync(VariantRequest dto);
-    Task UpdateAsync(long id, VariantRequest dto);
-    Task DeleteAsync(long id);
+    Task UpdateAsync(Guid id, VariantRequest dto);
+    Task DeleteAsync(Guid id);
 }

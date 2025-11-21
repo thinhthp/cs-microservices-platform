@@ -16,12 +16,12 @@ public class ModelService : IModelService
 
     public async Task<ModelResponse> AddAsync(ModelRequest dto)
     {
-        var model = new Model { Name = dto.Name };
+        var model = new Model { Name = dto.Name, BrandId = dto.BrandId };
         var createdModel = await _modelRepository.AddAsync(model);
         return MapToDto(createdModel);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         await _modelRepository.DeleteAsync(id);
     }
@@ -32,20 +32,25 @@ public class ModelService : IModelService
         return models.Select(MapToDto);
     }
 
-    public async Task<ModelResponse?> GetByIdAsync(long id)
+    public async Task<ModelResponse?> GetByIdAsync(Guid id)
     {
         var model = await _modelRepository.GetByIdAsync(id);
         return model == null ? null : MapToDto(model);
     }
 
-    public async Task UpdateAsync(long id, ModelRequest dto)
+    public async Task UpdateAsync(Guid id, ModelRequest dto)
     {
-        var model = new Model { Id = id, Name = dto.Name };
+        var model = new Model { Name = dto.Name, BrandId = dto.BrandId };
         await _modelRepository.UpdateAsync(model);
     }
 
     private ModelResponse MapToDto(Model model)
     {
-        return new ModelResponse { Id = model.Id, Name = model.Name };
+        return new ModelResponse
+        {
+            Id = model.Id,
+            Name = model.Name,
+            BrandId = model.BrandId,
+        };
     }
 }

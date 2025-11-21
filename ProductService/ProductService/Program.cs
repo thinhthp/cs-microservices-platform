@@ -3,8 +3,13 @@ using BLL.Services;
 using DAL.Data.DbFirst;
 using DAL.Interfaces;
 using DAL.Repositories;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using ProductService.Extensions;
+using ProductService.Grpc;
+
+// Enable HTTP/2 unencrypted support for gRPC
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +40,25 @@ builder.Services.AddSwaggerGen();
 // Health checks
 builder.Services.AddHealthChecks();
 
+// add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAllOrigins",
+        policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+    );
+});
+
+// gRPC server
+builder.Services.AddGrpc();
+
+// Kestrel: allow HTTP/1.1 + HTTP/2 on port 80 (h2c for gRPC)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80, o => o.Protocols = HttpProtocols.Http1);          // REST
+    options.ListenAnyIP(5001, o => o.Protocols = HttpProtocols.Http2);        // gRPC h2c (no TLS)
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,12 +68,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Enable CORS
+app.UseCors("AllowAllOrigins");
+
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// gRPC
+app.MapGrpcService<ProductGrpcService>();
 
 // Liveness endpoint for Docker/K8s
 app.MapHealthChecks("/health");

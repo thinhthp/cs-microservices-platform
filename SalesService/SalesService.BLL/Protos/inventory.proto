@@ -1,0 +1,24 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "InventoryService.Grpc";
+
+package inventory;
+
+service InventoryGrpc {
+  rpc GetDealer (GetDealerRequest) returns (GetDealerReply);
+}
+
+message Dealer {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string region = 4;
+}
+
+message GetDealerRequest {
+  string id = 1;
+}
+
+message GetDealerReply {
+  Dealer dealer = 1;
+}

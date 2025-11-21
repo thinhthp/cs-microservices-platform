@@ -2,7 +2,7 @@
 
 public class ModelResponse
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public long BrandId { get; set; }
+    public Guid? BrandId { get; set; }
 }

@@ -16,12 +16,18 @@ public class VariantService : IVariantService
 
     public async Task<VariantResponse> AddAsync(VariantRequest dto)
     {
-        var variant = new Variant { Name = dto.Name };
+        var variant = new Variant
+        {
+            Name = dto.Name,
+            RangeKm = dto.RangeKm,
+            BasePrice = dto.BasePrice,
+            ModelId = dto.ModelId,
+        };
         var createdVariant = await _variantRepository.AddAsync(variant);
         return MapToDto(createdVariant);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(Guid id)
     {
         await _variantRepository.DeleteAsync(id);
     }
@@ -32,20 +38,33 @@ public class VariantService : IVariantService
         return variants.Select(MapToDto);
     }
 
-    public async Task<VariantResponse?> GetByIdAsync(long id)
+    public async Task<VariantResponse?> GetByIdAsync(Guid id)
     {
         var variant = await _variantRepository.GetByIdAsync(id);
         return variant == null ? null : MapToDto(variant);
     }
 
-    public async Task UpdateAsync(long id, VariantRequest dto)
+    public async Task UpdateAsync(Guid id, VariantRequest dto)
     {
-        var variant = new Variant { Id = id, Name = dto.Name };
+        var variant = new Variant
+        {
+            Name = dto.Name,
+            RangeKm = dto.RangeKm,
+            BasePrice = dto.BasePrice,
+            ModelId = dto.ModelId,
+        };
         await _variantRepository.UpdateAsync(variant);
     }
 
     private VariantResponse MapToDto(Variant variant)
     {
-        return new VariantResponse { Id = variant.Id, Name = variant.Name };
+        return new VariantResponse
+        {
+            Id = variant.Id,
+            Name = variant.Name,
+            RangeKm = variant.RangeKm,
+            BasePrice = variant.BasePrice,
+            ModelId = variant.ModelId,
+        };
     }
 }

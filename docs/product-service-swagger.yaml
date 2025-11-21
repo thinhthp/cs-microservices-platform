@@ -1,0 +1,421 @@
+openapi: 3.0.1
+info:
+  title: ProductService
+  version: '1.0'
+paths:
+  /api/brands:
+    get:
+      tags:
+        - Brands
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BrandResponse'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BrandResponse'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BrandResponse'
+    post:
+      tags:
+        - Brands
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BrandRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/BrandRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+  '/api/brands/{id}':
+    get:
+      tags:
+        - Brands
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+    put:
+      tags:
+        - Brands
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BrandRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/BrandRequest'
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Brands
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+  /api/models:
+    get:
+      tags:
+        - Models
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelResponse'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelResponse'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelResponse'
+    post:
+      tags:
+        - Models
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ModelRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ModelRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+  '/api/models/{id}':
+    get:
+      tags:
+        - Models
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ModelResponse'
+    put:
+      tags:
+        - Models
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ModelRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ModelRequest'
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Models
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+  /api/variants:
+    get:
+      tags:
+        - Variants
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VariantResponse'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VariantResponse'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VariantResponse'
+    post:
+      tags:
+        - Variants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VariantRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/VariantRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/VariantRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VariantResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VariantResponse'
+  '/api/variants/{id}':
+    get:
+      tags:
+        - Variants
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VariantResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariantResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VariantResponse'
+    put:
+      tags:
+        - Variants
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VariantRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/VariantRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/VariantRequest'
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Variants
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    BrandRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    BrandResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ModelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        brandId:
+          type: integer
+          format: int64
+      additionalProperties: false
+    ModelResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          nullable: true
+        brandId:
+          type: integer
+          format: int64
+      additionalProperties: false
+    VariantRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        rangeKm:
+          type: integer
+          format: int64
+          nullable: true
+        basePrice:
+          type: number
+          format: double
+          nullable: true
+        modelId:
+          type: integer
+          format: int64
+          nullable: true
+      additionalProperties: false
+    VariantResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          nullable: true
+        rangeKm:
+          type: integer
+          format: int64
+          nullable: true
+        basePrice:
+          type: number
+          format: double
+          nullable: true
+        modelId:
+          type: integer
+          format: int64
+          nullable: true
+      additionalProperties: false
